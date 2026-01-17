@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    /* Card Container */
+    .enrollment-card {
+        background-color: #ffffff;
+        padding: 24px;
+        border-radius: 16px;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        border: 1px solid #f1f5f9;
+        width: 100%;
+        /* max-width is handled by base.html's main-container */
+    }
+
+    /* Typography */
+    .card-title {
+        font-size: 1.25rem; /* ~text-xl */
+        font-weight: 700;
+        color: #1e293b; /* slate-800 */
+        margin-bottom: 8px;
+    }
+
+    .card-subtitle {
+        font-size: 0.875rem; /* ~text-sm */
+        color: #64748b; /* slate-500 */
+        margin-bottom: 24px;
+    }
+
+    /* Form Elements */
+    .form-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 0.75rem; /* ~text-xs */
+        font-weight: 700;
+        color: #64748b; /* slate-500 */
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 8px;
+    }
+
+    .form-input, .form-select {
+        width: 100%;
+        padding: 14px;
+        border-radius: 12px; /* ~rounded-xl */
+        border: 1px solid #e2e8f0; /* slate-200 */
+        background-color: #f8fafc; /* slate-50 */
+        font-size: 1rem;
+        color: #334155;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    /* Input States */
+    .form-input:focus, .form-select:focus {
+        border-color: #6366f1; /* indigo-500 */
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        background-color: #ffffff;
+    }
+
+    /* Additional Details Section */
+    .details-panel {
+        background-color: #f8fafc; /* slate-50 */
+        padding: 16px;
+        border-radius: 12px;
+        border: 1px solid #f1f5f9; /* slate-100 */
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .details-title {
+        font-size: 0.875rem; /* ~text-sm */
+        font-weight: 700;
+        color: #312e81; /* indigo-900 */
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* Override input background for the panel to be white for contrast */
+    .details-panel .form-input {
+        background-color: #ffffff;
+        padding: 12px;
+        border-radius: 8px;
+    }
+
+    /* Button */
+    .btn-submit {
+        width: 100%;
+        background-color: #4f46e5; /* indigo-600 */
+        color: white;
+        padding: 16px;
+        border-radius: 12px; /* ~rounded-xl */
+        font-weight: 700;
+        font-size: 1.125rem; /* ~text-lg */
+        border: none;
+        cursor: pointer;
+        margin-top: 16px;
+        box-shadow: 0 20px 25px -5px rgba(199, 210, 254, 0.5); /* indigo-200 shadow approx */
+        transition: background-color 0.2s;
+    }
+
+    .btn-submit:hover {
+        background-color: #4338ca; /* indigo-700 */
+    }
+    
+    /* Icon adjustment */
+    .icon {
+        stroke-width: 2px;
+    }
+</style>
+
+<div class="enrollment-card">
+    <h2 class="card-title">New Enrollment</h2>
+    <p class="card-subtitle">Add student details for Aadhaar tracking.</p>
+    
+    <form method="POST" class="form-stack" action="{% url 'submitstudent' %}">
+        {% csrf_token %}
+
+        <!-- Student Name -->
+        <div class="form-group">
+            <label class="form-label">Student Name</label>
+            <input name="name" required type="text" class="form-input" placeholder="e.g. Aarav Kumar" />
+        </div>
+
+        <!-- Class & Roll No Row -->
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Class</label>
+                <select name="class" class="form-select">
+                    <option value="5">Class 5</option>
+                    <option value="4">Class 4</option>
+                    <option value="3">Class 3</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Roll No</label>
+                <input name="rollNo" type="text" class="form-input" placeholder="01" />
+            </div>
+        </div>
+
+        <!-- Additional Details Panel -->
+        <div class="details-panel">
+             <h3 class="details-title">
+                <i data-lucide="contact" width="16" class="icon"></i> Additional Details
+             </h3>
+             
+             <div class="form-group">
+                <label class="form-label">Address / Village</label>
+                <input name="address" type="text" class="form-input" placeholder="Village name..." />
+             </div>
+             
+             <div class="form-group">
+                <label class="form-label">Guardian Name</label>
+                <input name="guardian" type="text" class="form-input" placeholder="Father/Mother Name" />
+             </div>
+             
+             <!-- <div class="form-row">
+                 <div class="form-group">
+                    <label class="form-label">Prev. Section</label>
+                    <input name="previousSection" type="text" class="form-input" placeholder="e.g. 4-A" />
+                 </div>
+                 <div class="form-group">
+                    <label class="form-label">Prev. Grade %</label>
+                    <input name="previousGrade" type="number" class="form-input" placeholder="e.g. 85" />
+                 </div>
+             </div> -->
+        </div>
+        
+        <button type="submit" class="btn-submit">
+            Complete Enrollment
+        </button>
+        <div>
+            <h1>{{reply}}</h1>
+        </div>
+    </form>
+</div>
+{% endblock %}

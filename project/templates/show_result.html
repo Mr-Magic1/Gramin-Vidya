@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <title>Student Results</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 40px;
+        }
+        th, td {
+            border: 1px solid #333;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        h2 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<h1 align="center">Student Result Sheet</h1>
+
+{% for student in results %}
+
+<h2>{{ student.name }} (Roll: {{ student.roll }}, Class: {{ student.clas }})</h2>
+
+<table>
+    <tr>
+        <th>Subject</th>
+        <th colspan="2">Half Yearly</th>
+        <th colspan="2">Final Exam</th>
+        <th colspan="2">Total</th>
+    </tr>
+    <tr>
+        <td>Maths</td>
+        <td>{{ student.hmath }}</td>
+        <td>100</td>
+        <td>{{ student.fmath }}</td>
+        <td>100</td>
+        <td>{{ student.maths_total }}</td>
+        <td>200</td>
+    </tr>
+    <tr>
+        <td>Science</td>
+        <td>{{ student.hsci }}</td>
+        <td>100</td>
+        <td>{{ student.fsci }}</td>
+        <td>100</td>
+        <td>{{ student.sci_total }}</td>
+        <td>200</td>
+    </tr>
+    <tr>
+        <td>History</td>
+        <td>{{ student.hhis }}</td>
+        <td>100</td>
+        <td>{{ student.fhis }}</td>
+        <td>100</td>
+        <td>{{ student.his_total }}</td>
+        <td>200</td>
+    </tr>
+    <tr>
+        <td>English</td>
+        <td>{{ student.heng }}</td>
+        <td>100</td>
+        <td>{{ student.feng }}</td>
+        <td>100</td>
+        <td>{{ student.eng_total }}</td>
+        <td>200</td>
+    </tr>
+    <tr>
+        <td>Hindi</td>
+        <td>{{ student.hhindi }}</td>
+        <td>100</td>
+        <td>{{ student.fhindi }}</td>
+        <td>100</td>
+        <td>{{ student.hindi_total }}</td>
+        <td>200</td>
+    </tr>
+    <tr>
+        <th>Total</th>
+        <th>{{ student.half_total }}</th>
+        <td>500</td>
+        <th>{{ student.final_total }}</th>
+        <td>500</td>
+        <th>{{ student.grand_total }}</td>
+        <td>1000</td>
+    </tr>
+</table>
+
+<h2>Grade : {{student.grade}} </h2>
+
+<hr style="border: 3px solid black; margin: 30px 0;">
+
+{% empty %}
+<p>No student records found.</p>
+{% endfor %}
+
+{% endblock %}

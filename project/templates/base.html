@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VidyaSetu - Rural Attendance</title>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Base Reset & Fonts */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+            color: #0f172a; /* slate-900 */
+            min-height: 100vh;
+            padding-bottom: 80px; /* Space for fixed footer */
+        }
+
+        /* Header Styles */
+        .app-header {
+            background-color: #4338ca; /* indigo-700 */
+            color: white;
+            padding: 48px 16px 32px 16px; /* pt-12 pb-8 px-4 */
+            border-bottom-left-radius: 2.5rem;
+            border-bottom-right-radius: 2.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+            position: relative;
+            z-index: 10;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .brand-title {
+            font-size: 1.5rem; /* text-2xl */
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .brand-subtitle {
+            color: #c7d2fe; /* indigo-200 */
+            font-size: 0.875rem; /* text-sm */
+            margin-top: 4px;
+        }
+
+        /* Header Icons */
+        .icon-brand {
+            color: #a5b4fc; /* indigo-300 */
+        }
+
+        .btn-logout {
+            background-color: #4f46e5; /* indigo-600 */
+            padding: 8px;
+            border-radius: 9999px; /* full */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-logout:hover {
+            background-color: #6366f1; /* indigo-500 */
+        }
+
+        .icon-logout {
+            color: #e0e7ff; /* indigo-100 */
+        }
+
+        /* Main Content Area */
+        .main-container {
+            max-width: 28rem; /* max-w-md */
+            margin: 0 auto;
+            position: relative;
+            margin-top: -16px; /* -mt-4 */
+            z-index: 20;
+            padding: 0 16px;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #ffffff;
+            border-top: 1px solid #e2e8f0; /* slate-200 */
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 24px;
+            z-index: 50;
+        }
+
+        .nav-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-text {
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        /* Active State Helpers */
+        .nav-link.active {
+            color: #4f46e5; /* indigo-600 */
+        }
+
+        .nav-link.inactive {
+            color: #94a3b8; /* slate-400 */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header (Only show if logged in) -->
+    <header class="app-header">
+        <div class="header-content">
+            <div>
+                <h1 class="brand-title">
+                    <i data-lucide="book-open" class="icon-brand"></i>
+                    VidyaSetu
+                </h1>
+                <p class="brand-subtitle">Govt Primary School, Rampur</p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                
+            </div>
+            <div >
+                <a href="{% url 'result' %}" style="color: red;">Update Result</a>
+            </div>
+            <div >
+                <a href="{% url 'show_result' %}" style="color: red;">Show Result</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Navigation (Only show if logged in) -->
+    
+    <nav class="bottom-nav">
+        <!-- Dashboard Link -->
+        <a href="{% url 'dashboard' %}" class="nav-link {% if view == 'dashboard' %}active{% else %}inactive{% endif %}">
+            <i data-lucide="bar-chart-3" width="22"></i>
+            <span class="nav-text">Reports</span>
+        </a>
+
+        <!-- Attendance Link -->
+        <a href="{% url 'attendance' %}" class="nav-link {% if view == 'attendance' %}active{% else %}inactive{% endif %}">
+            <i data-lucide="scan-face" width="22"></i>
+            <span class="nav-text">Smart Attd.</span>
+        </a>
+
+        <!-- Add Student Link -->
+        <a href="{% url 'add_student' %}" class="nav-link {% if view == 'add' %}active{% else %}inactive{% endif %}">
+            <i data-lucide="plus" width="22"></i>
+            <span class="nav-text">Enroll</span>
+        </a>
+    </nav>
+
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

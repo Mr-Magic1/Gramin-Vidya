@@ -1,0 +1,351 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    /* * Local Styles for Attendance List 
+     * Using the Slate/Indigo/Green/Orange palette from the original design
+     */
+    
+    .page-container {
+        padding-bottom: 80px; /* Space for bottom nav */
+    }
+
+    /* Header Card */
+    .header-card {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 16px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        border: 1px solid #f1f5f9; /* slate-100 */
+        margin-bottom: 16px;
+    }
+
+    .header-title {
+        font-size: 1.125rem; /* text-lg */
+        font-weight: 700;
+        color: #1e293b; /* slate-800 */
+        margin-bottom: 4px;
+    }
+
+    .header-subtitle {
+        font-size: 0.875rem; /* text-sm */
+        color: #64748b; /* slate-500 */
+    }
+
+    /* Student List Item */
+    .student-card {
+        background-color: #ffffff;
+        padding: 16px;
+        border-radius: 16px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        border: 1px solid #f1f5f9; /* slate-100 */
+        margin-bottom: 16px;
+        transition: all 0.2s;
+    }
+
+    /* State: Present */
+    .student-card.is-present {
+        border-color: #bbf7d0; /* green-200 */
+        background-color: rgba(240, 253, 244, 0.3); /* green-50/30 */
+    }
+
+    .card-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+
+    .student-profile {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    /* Avatar */
+    .avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.875rem; /* text-sm */
+    }
+
+    .avatar.present {
+        background-color: #dcfce7; /* green-100 */
+        color: #15803d; /* green-700 */
+    }
+
+    .avatar.absent {
+        background-color: #f1f5f9; /* slate-100 */
+        color: #64748b; /* slate-500 */
+    }
+
+    /* Student Info Text */
+    .student-name {
+        font-weight: 700;
+        color: #1e293b; /* slate-800 */
+        font-size: 1rem;
+    }
+
+    .student-details {
+        font-size: 0.75rem; /* text-xs */
+        color: #64748b; /* slate-500 */
+        font-weight: 500;
+    }
+
+    /* Action: Scan Button */
+    .btn-scan {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background-color: #4f46e5; /* indigo-600 */
+        color: white;
+        padding: 8px 16px;
+        border-radius: 12px; /* rounded-xl */
+        font-size: 0.75rem; /* text-xs */
+        font-weight: 700;
+        text-decoration: none;
+        box-shadow: 0 10px 15px -3px rgba(199, 210, 254, 0.5); /* indigo-200 shadow */
+        transition: transform 0.1s;
+    }
+
+    .btn-scan:active {
+        transform: scale(0.95);
+    }
+
+    /* Status: Verified Badge */
+    .status-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+
+    .badge-verified {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: #16a34a; /* green-600 */
+        background-color: #dcfce7; /* green-100 */
+        padding: 4px 8px;
+        border-radius: 8px;
+        font-size: 0.75rem; /* text-xs */
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .time-stamp {
+        font-size: 10px;
+        color: #94a3b8; /* slate-400 */
+    }
+
+    /* Meal Section */
+    .meal-section {
+        border-top: 1px solid #f1f5f9; /* slate-100 */
+        padding-top: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .meal-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #475569; /* slate-600 */
+        font-size: 0.75rem; /* text-xs */
+        font-weight: 500;
+    }
+
+    /* Toggle Switch */
+    .toggle-switch {
+        width: 40px;
+        height: 24px;
+        border-radius: 9999px;
+        padding: 4px;
+        display: block;
+        position: relative;
+        transition: background-color 0.2s;
+        text-decoration: none;
+    }
+
+    /* Toggle States */
+    .toggle-switch.is-on {
+        background-color: #f97316; /* orange-500 */
+    }
+
+    .toggle-switch.is-off {
+        background-color: #e2e8f0; /* slate-200 */
+    }
+
+    /* Toggle Knob Animation */
+    .toggle-knob {
+        width: 16px;
+        height: 16px;
+        background-color: white;
+        border-radius: 50%;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        position: absolute;
+        top: 4px;
+        /* Position handled by class modifier below */
+        transition: left 0.2s;
+    }
+
+    .toggle-switch.is-on .toggle-knob {
+        left: 20px; /* Moves to right */
+    }
+    
+    .toggle-switch.is-off .toggle-knob {
+        left: 4px; /* Stays left */
+    }
+
+    /* Camera Overlay */
+    .camera-overlay {
+        display: none; /* Hidden by default */
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.9);
+        z-index: 60;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+    }
+
+    .camera-overlay.is-active {
+        display: flex;
+    }
+
+    .scan-frame {
+        width: 256px;
+        height: 256px;
+        border: 2px solid #22c55e; /* green-500 */
+        border-radius: 16px;
+        position: relative;
+        overflow: hidden;
+        background-color: #1e293b; /* slate-800 */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #475569; /* slate-600 */
+    }
+
+    .scan-line {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background-color: #22c55e;
+        box-shadow: 0 0 15px rgba(34, 197, 94, 0.8);
+        animation: scan-animation 1.5s ease-in-out infinite;
+    }
+
+    .scan-text {
+        color: white;
+        margin-top: 24px;
+        font-weight: 500;
+        animation: pulse-animation 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    @keyframes scan-animation {
+        0% { top: 0%; opacity: 0; }
+        10% { opacity: 1; }
+        90% { opacity: 1; }
+        100% { top: 100%; opacity: 0; }
+    }
+
+    @keyframes pulse-animation {
+        0%, 100% { opacity: 1; }
+        50% { opacity: .5; }
+    }
+</style>
+
+<div class="page-container">
+    <div class="header-card">
+        <h2 class="header-title">Smart Attendance</h2>
+        <p class="header-subtitle">Mark students present or scan faces</p>
+    </div>
+    <form method="GET">
+                <input type="text" name="classsearch" placeholder="Enter class : ">
+                <button type="submit">Search</button>
+     </form>
+     <form method="GET">
+        <input type="text" name="namesearch" placeholder="Enter the name of the student to search: ">
+        <button type="submit">Search</button>
+     </form>
+    {% for item in students %}
+    <!-- Student Card -->
+    <!-- We dynamically add 'is-present' class based on status -->
+    <div class="student-card {% if item.status == 'present' %}is-present{% endif %}">
+        
+        <div class="card-row">
+            <div class="student-profile">
+                <!-- Avatar -->
+                <div class="avatar {% if item.status == 'present' %}present{% else %}absent{% endif %}">
+                    {{ item.student.avatar_initials }}
+                </div>
+                <div>
+                    <h4 class="student-name">{{ item.name }}</h4>
+                    <p class="student-details">Roll No: {{ item.roll }} • Class: {{ item.clas }}</p>
+                </div>
+            </div>
+            
+            <!-- {% if item.status == 'absent' %}
+            <a href="{% url 'mark_present' item.student.id %}" onclick="simulateScan(event, this)" class="btn-scan">
+                <i data-lucide="camera" width="16"></i>
+                SCAN
+            </a>
+            {% else %} -->
+            <!-- <div class="status-container">
+                <span class="badge-verified">
+                    <i data-lucide="check-circle" width="12"></i> Verified
+                </span>
+                <span class="time-stamp">{{ item.time|time:"H:i" }}</span>
+            </div>
+            {% endif %} -->
+        </div>
+
+        {% if item.status == 'present' %}
+        <div class="meal-section">
+            <div class="meal-label">
+                <i data-lucide="utensils" width="14"></i>
+                <span>Mid-Day Meal</span>
+            </div>
+            <!-- Toggle Switch -->
+            <a href="{% url 'toggle_meal' item.student.id %}" class="toggle-switch {% if item.meal_taken %}is-on{% else %}is-off{% endif %}">
+                <div class="toggle-knob"></div>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Camera Overlay -->
+<div id="camera-overlay" class="camera-overlay">
+    <div class="scan-frame">
+         <div class="scan-line"></div>
+         <i data-lucide="scan-face" width="64" height="64"></i>
+    </div>
+    <p class="scan-text">Scanning...</p>
+</div>
+
+<script>
+    function simulateScan(e, link) {
+        e.preventDefault();
+        const overlay = document.getElementById('camera-overlay');
+        
+        // Show overlay by adding the active class
+        overlay.classList.add('is-active');
+        
+        // Wait 1.5 seconds then follow the link
+        setTimeout(() => {
+            window.location.href = link.href;
+        }, 1500);
+    }
+</script>
+{% endblock %}

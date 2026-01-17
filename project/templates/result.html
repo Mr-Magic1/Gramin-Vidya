@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="POST" action="{% url 'update_result' %}">
+    {% csrf_token %}
+    <input type="text" name="name" placeholder="Enter the name of the student: "><br>
+    <input type="number" name="clas" placeholder="Enter the class: "><br>
+    <input type="number" name="roll" placeholder="Enter the roll number: "><br>
+    <input type="text" name="guard" placeholder="Enter the Father/Mother Name: "><br>
+    <h2>Enter the marks in Half Yearly</h2><br>
+    <input type="number" name="hmath" placeholder="Enter Marks in maths: "><br>
+    <input type="number" name="hsci" placeholder="Enter Marks in science: "><br>
+    <input type="number" name="hhis" placeholder="Enter Marks in history: "><br>
+    <input type="number" name="heng" placeholder="Enter Marks in english: "><br>
+    <input type="number" name="hhindi" placeholder="Enter Marks in hindi: "><br>
+    <h2>Enter the marks in final exam</h2><br>
+    <input type="number" name="fmath" placeholder="Enter Marks in maths: "><br>
+    <input type="number" name="fsci" placeholder="Enter Marks in science: "><br>
+    <input type="number" name="fhis" placeholder="Enter Marks in history: "><br>
+    <input type="number" name="feng" placeholder="Enter Marks in english: "><br>
+    <input type="number" name="fhindi" placeholder="Enter Marks in hindi: "><br>
+    <button type="submit">Upload</button>
+</form> 
+
+<h3>{{reply}}</h3>
+
+
+{% endblock %}
