@@ -1,12 +1,17 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from student.models import Student
+from django.contrib.auth.decorators import login_required
+
+@login_required(login_url='login')
 def home(request):
     return render(request,'dashboard.html')
 
+@login_required(login_url='login')
 def dashboard(request):
     return render(request,"dashboard.html")
 
+@login_required(login_url='login')
 def submit_student(request):
     reply="Error Occured"
     if request.method=="POST":
@@ -20,8 +25,12 @@ def submit_student(request):
         reply="Data uploaded successfully"
     return render(request,'add_student.html',{'reply':reply})
 
+@login_required(login_url='login')
 def attendance(request):
-    students=Student.objects.all()
+    if request.user.username=="shrey":
+        students=Student.objects.filter(clas__icontains=5)
+    if request.user.username=="Khushboo":
+        students=Student.objects.filter(clas__icontains=4)
     if request.method=="GET":
         clas=request.GET.get('classsearch')
         name=request.GET.get('namesearch')
@@ -33,11 +42,13 @@ def attendance(request):
 
 
 # to update the result of the students
+@login_required(login_url='login')
 def result(request):
     return render(request,'result.html')
 
 
 from result.models import Result 
+@login_required(login_url='login')
 def update_result(request):
     reply="Error Occured"
     if request.method=="POST":   
@@ -67,6 +78,7 @@ def update_result(request):
 from result.models import Result
 from result.models import Result
 
+@login_required(login_url='login')
 def show_result(request):
     results = Result.objects.all()
 
@@ -119,7 +131,46 @@ def show_result(request):
     return render(request, 'show_result.html', {'results': results})
 
 
-
+@login_required(login_url='login')
 def add_student(request):
     return render(request,'add_student.html')
+
+
+
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+
+from accounts.forms import RegistrationForm
+
+def register_view(request):
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, 'Registration successful and Logged in!')
+            return redirect('dashboard')
+        else:
+            messages.error(request, 'Registration failed. Please correct the errors below.')
+    else:
+        form = RegistrationForm()
+    return render(request, 'register.html', {'form': form})
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request, 'Login successful!')
+            return redirect('dashboard')
+        else:
+            messages.error(request, 'Invalid username or password.')
+    return render(request, 'login.html')
+
+def logout_view(request):
+    logout(request)
+    messages.success(request, 'You have been logged out.')
+    return redirect('login')
 
