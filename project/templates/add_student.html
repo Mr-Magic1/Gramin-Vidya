@@ -131,7 +131,8 @@
     <h2 class="card-title">New Enrollment</h2>
     <p class="card-subtitle">Add student details for Aadhaar tracking.</p>
     
-    <form method="POST" class="form-stack" action="{% url 'submitstudent' %}">
+    <!-- Added enctype for image upload support -->
+    <form method="POST" class="form-stack" action="{% url 'submitstudent' %}" enctype="multipart/form-data">
         {% csrf_token %}
 
         <!-- Student Name -->
@@ -171,6 +172,12 @@
                 <label class="form-label">Guardian Name</label>
                 <input name="guardian" type="text" class="form-input" placeholder="Father/Mother Name" />
              </div>
+
+             <!-- Added Image Input for Face Recognition -->
+             <div class="form-group">
+                <label class="form-label">Student Photo (Face Rec)</label>
+                <input type="file" name="student_img" accept="image/*" class="form-input" required>
+             </div>
              
              <!-- <div class="form-row">
                  <div class="form-group">
@@ -187,9 +194,11 @@
         <button type="submit" class="btn-submit">
             Complete Enrollment
         </button>
-        <div>
-            <h1>{{reply}}</h1>
+        {% if reply %}
+        <div style="margin-top: 1rem; text-align: center; color: green;">
+            <h3>{{reply}}</h3>
         </div>
+        {% endif %}
     </form>
 </div>
 {% endblock %}
