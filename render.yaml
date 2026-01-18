@@ -1,9 +1,0 @@
-services:
-  - type: web
-    name: gramin-vidya
-    runtime: python
-    env: python
-    plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn project.wsgi:application --chdir project
-    pythonVersion: 3.10.13
