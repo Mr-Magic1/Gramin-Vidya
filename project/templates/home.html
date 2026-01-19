@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOME PAGE</title>
+</head>
+<body>
+    <h1> Welcome to Vidya Setu Platform </h1>
+
+    <div>
+        <form action="{% url 'login' %}">
+            <button>Login as a teacher</button>
+        </form>
+        <form action="{% url 'student' %}">
+            <button>Login as a student</button>
+        </form>
+    </div>
+
+</body>
+</html>
+
+
+

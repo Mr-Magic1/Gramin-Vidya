@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <form method="POST" action="{% url 'student_result' %}">
+    {% csrf_token %}
+    <input type="text" name="firstname" value="{{student.first_name}}" hidden>
+    <input type="text" name="mob" value="{{student.mobile}}" hidden>
+    <button type="submit"> SHOW MY RESULT</button>
+</form>
+
+<h2>
+    Name : {{student.first_name}} {{student.last_name}}
+</h2>
+<h2>
+    Roll No. : {{student.roll}}
+</h2>
+<h2>
+    Guardian Name : {{student.guard}}
+</h2>
+
+
+</body>
+</html>
+

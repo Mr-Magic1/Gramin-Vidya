@@ -36,6 +36,11 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
 
     path('ajax/scan_face/', views.scan_face_attendance, name='scan_face_attendance'),
+
+    path('student/',views.student,name='student'),
+
+    path('student_profile',views.student_profile,name='student_profile'),
+    path('student_result',views.student_result,name='student_result')
 ]
 
 if settings.DEBUG:

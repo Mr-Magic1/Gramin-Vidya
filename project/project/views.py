@@ -9,9 +9,104 @@ import numpy as np
 import base64
 from django.core.files.base import ContentFile
 
-@login_required(login_url='login')
 def home(request):
-    return render(request,'dashboard.html')
+    logout(request)
+    return render(request,'home.html')
+
+def student(request):
+    return render(request,'student_login.html')
+
+def student_profile(request):
+    context = {}
+
+    if request.method == "POST":
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '').strip()
+
+        # 1️⃣ Extract mobile number from username
+        mobile = "".join(ch for ch in username if ch.isdigit())
+
+        if not mobile:
+            context['error'] = "Invalid username format"
+            return render(request, 'student_profile.html', context)
+
+        try:
+            # 2️⃣ Get student by mobile number
+            student = Student.objects.get(mobile=mobile)
+
+            # 3️⃣ Build expected username
+            first_name = student.first_name.upper()
+            expected_username = first_name + student.mobile
+
+            # 4️⃣ Build expected password
+            dob_year = student.dob.year
+            expected_password = first_name[:4] + str(dob_year)
+
+            # 5️⃣ Validate username & password
+            if username == expected_username and password == expected_password:
+                context['student'] = student
+                return render(request, 'student_profile.html', context)
+            else:
+                context['error'] = "Invalid username or password"
+
+        except Student.DoesNotExist:
+            context['error'] = "No student found with this mobile number"
+
+    return render(request, 'student_profile.html', context)
+
+def student_result(request):
+    mobile=request.POST.get('mob')
+    results = Result.objects.filter(mobile__icontains=mobile)
+
+    for student in results:
+        student.half_total = (
+            student.hmath +
+            student.hsci +
+            student.hhis +
+            student.heng +
+            student.hhindi
+        )
+
+        student.final_total = (
+            student.fmath +
+            student.fsci +
+            student.fhis +
+            student.feng +
+            student.fhindi
+        )
+        student.maths_total=(
+            student.hmath+student.fmath
+        )
+        student.sci_total=(
+            student.hsci+student.fsci
+        )
+        student.his_total=(
+            student.hhis+student.fhis
+        )
+        student.eng_total=(
+            student.heng+student.feng
+        )
+        student.hindi_total=(
+            student.hhindi+student.fhindi
+        )
+        grade=''
+        student.grand_total = student.half_total + student.final_total
+        if (student.grand_total>850):
+            grade="A+"
+        elif(student.grand_total>740):
+            grade="A"
+        elif (student.grand_total>640):
+            grade="B+"
+        elif (student.grand_total>500):
+            grade="B"
+        elif (student.grand_total>350):
+            grade="c"
+
+        student.grade=grade
+
+    return render(request, 'student_result.html', {'results': results})
+
+    
 
 @login_required(login_url='login')
 def dashboard(request):
@@ -32,26 +127,34 @@ def dashboard(request):
 
 @login_required(login_url='login')
 def submit_student(request):
-    reply = "Error Occured"
+    reply = ""
     if request.method == "POST":
-        name = request.POST.get('name')
-        clas = request.POST.get('class')
-        roll = request.POST.get('rollNo')
-        address = request.POST.get('address')
-        guardian = request.POST.get('guardian')
-        img = request.FILES.get('student_img')
-
-        data = Student(
-            name=name,
+        # Get POST data
+        first_name=request.POST.get('first_name')
+        last_name=request.POST.get('last_name')
+        clas = request.POST.get("clas")
+        roll = request.POST.get("roll")
+        address = request.POST.get("address", "")
+        guardian = request.POST.get("guard")
+        mobile = request.POST.get("mobile")
+        dob = request.POST.get("dob")  # format: YYYY-MM-DD
+        student_img = request.FILES.get("student_img")
+            # Create Student object
+        student = Student.objects.create(
+            first_name=first_name,
+            last_name=last_name,
             clas=clas,
             roll=roll,
             address=address,
             guard=guardian,
-            student_img=img
+            mobile=mobile,
+            dob=dob,
+            student_img=student_img
         )
-        data.save()
-        reply = "Data uploaded successfully"
-    return render(request, 'add_student.html', {'reply': reply})
+
+        reply = f"Student {student.first_name} enrolled successfully!"
+
+    return render(request, "add_student.html", {"reply": reply})
 
 @login_required(login_url='login')
 def attendance(request):
@@ -87,7 +190,7 @@ def attendance(request):
             
         student_list.append({
             'student': s,
-            'name': s.name,
+            'name': s.first_name+' '+s.last_name,
             'roll': s.roll,
             'clas': s.clas,
             'status': status
@@ -199,8 +302,53 @@ def update_result(request):
 @login_required(login_url='login')
 def show_result(request):
     results = Result.objects.all()
-    # (Your existing calculation logic here...)
-    # I am truncating the calculation part for brevity, keep your existing logic
+
+    for student in results:
+        student.half_total = (
+            student.hmath +
+            student.hsci +
+            student.hhis +
+            student.heng +
+            student.hhindi
+        )
+
+        student.final_total = (
+            student.fmath +
+            student.fsci +
+            student.fhis +
+            student.feng +
+            student.fhindi
+        )
+        student.maths_total=(
+            student.hmath+student.fmath
+        )
+        student.sci_total=(
+            student.hsci+student.fsci
+        )
+        student.his_total=(
+            student.hhis+student.fhis
+        )
+        student.eng_total=(
+            student.heng+student.feng
+        )
+        student.hindi_total=(
+            student.hhindi+student.fhindi
+        )
+        grade=''
+        student.grand_total = student.half_total + student.final_total
+        if (student.grand_total>850):
+            grade="A+"
+        elif(student.grand_total>740):
+            grade="A"
+        elif (student.grand_total>640):
+            grade="B+"
+        elif (student.grand_total>500):
+            grade="B"
+        elif (student.grand_total>350):
+            grade="c"
+
+        student.grade=grade
+
     return render(request, 'show_result.html', {'results': results})
 
 # --- AUTH VIEWS ---

@@ -2,20 +2,19 @@ from django.db import models
 
 # Create your models here.
 class Result(models.Model):
-    # Basic student details
     name = models.CharField(max_length=100)
     clas = models.IntegerField()
     roll = models.IntegerField(unique=True)
     guard = models.CharField(max_length=100) 
+    mobile = models.CharField(max_length=10)
+    dob = models.DateField(null=True, blank=True)
 
-    # Half Yearly Marks
     hmath = models.IntegerField()
     hsci = models.IntegerField()
     hhis = models.IntegerField()
     heng = models.IntegerField()
     hhindi = models.IntegerField()
 
-    # Final Exam Marks
     fmath = models.IntegerField()
     fsci = models.IntegerField()
     fhis = models.IntegerField()

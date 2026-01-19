@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+<h2>
+    Your username is your first name in capital letter.registered mobile number
+</h2>
+<h2>
+    e.g. Kailash Vishwakarma and his registered mobile number is 1234567896
+</h2>
+    then your username is KAILASH1234567896
+</h2>
+
+<h1>
+    For password
+</h1>
+<h2>
+    first 4 letter of your name in capital letter and then year of birth
+</h2>
+<h2>
+    e.g. KAIL2006
+</h2>
+
+<form method="POST" action="{% url 'student_profile' %}">
+    {% csrf_token %}
+    <input type="text" name="username" placeholder="Enter Your Username: ">
+    <input type="text" name="password" placeholder="Enter your Password: ">
+    <button type="submit">Login</button>
+</form>
+
+<h3>{{reply}}</h3>
+
+</body>
+</html>
