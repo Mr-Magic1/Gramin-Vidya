@@ -1,0 +1,67 @@
+<!-- 🐺 WOLF FOOTER START -->
+<style>
+/* All styles scoped under .wolf-ftr */
+.wolf-ftr {
+    background-color: #ffffff;
+    border-top: 1px solid #e2e8f0;
+    padding: 12px 24px;
+}
+
+.wolf-ftr-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.wolf-ftr-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-decoration: none;
+    font-size: 10px;
+    font-weight: 500;
+    color: #94a3b8;
+    transition: color .2s;
+}
+
+.wolf-ftr-link:hover {
+    color: #4f46e5;
+}
+
+.wolf-ftr-icon {
+    width: 22px;
+}
+</style>
+
+<nav class="wolf-ftr">
+    <div class="wolf-ftr-nav">
+
+        <a href="{% url 'dashboard' %}" class="wolf-ftr-link">
+            <i data-lucide="bar-chart-3" class="wolf-ftr-icon"></i>
+            <span>Reports</span>
+        </a>
+
+        <a href="{% url 'result' %}" class="wolf-ftr-link">
+            <i data-lucide="edit-3" class="wolf-ftr-icon"></i>
+            <span>Update Result</span>
+        </a>
+
+        <a href="{% url 'attendance' %}" class="wolf-ftr-link">
+            <i data-lucide="scan-face" class="wolf-ftr-icon"></i>
+            <span>Smart Attd.</span>
+        </a>
+
+        <a href="{% url 'show_result' %}" class="wolf-ftr-link">
+            <i data-lucide="file-text" class="wolf-ftr-icon"></i>
+            <span>Show Result</span>
+        </a>
+
+        <a href="{% url 'add_student' %}" class="wolf-ftr-link">
+            <i data-lucide="plus" class="wolf-ftr-icon"></i>
+            <span>Enroll</span>
+        </a>
+
+    </div>
+</nav>
+<!-- 🐺 WOLF FOOTER END -->

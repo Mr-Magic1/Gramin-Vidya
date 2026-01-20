@@ -1,97 +1,199 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Face Attendance</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8fafc;
+        }
 
-{% block content %}
-<style>
-    /* ... (Keep your existing styles) ... */
-    
-    /* New Styles for Camera */
-    .camera-section {
-        background: white;
-        padding: 20px;
-        border-radius: 16px;
-        margin-bottom: 20px;
-        text-align: center;
-        border: 1px solid #f1f5f9;
-    }
+        .page-container {
+            max-width: 900px;
+            margin: auto;
+        }
 
-    #video-feed {
-        width: 100%;
-        max-width: 400px;
-        border-radius: 12px;
-        background: #000;
-        margin-bottom: 15px;
-        transform: scaleX(-1); /* Mirror effect */
-    }
+        .header-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
 
-    .btn-capture {
-        background-color: #4f46e5;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 8px;
-        border: none;
-        cursor: pointer;
-        font-weight: bold;
-    }
-    
-    .btn-capture:hover { background-color: #4338ca; }
+        .header-subtitle {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-bottom: 12px;
+        }
 
-    #scan-status {
-        margin-top: 10px;
-        font-weight: 600;
-        min-height: 24px;
-    }
-    
-    .success-msg { color: green; }
-    .error-msg { color: red; }
-    .loading-msg { color: orange; }
+        /* Camera Section */
+        .camera-section {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+            border: 1px solid #f1f5f9;
+        }
 
-</style>
+        #video-feed {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 12px;
+            background: #000;
+            margin-bottom: 15px;
+            transform: scaleX(-1);
+        }
 
+        .btn-capture {
+            background-color: #4f46e5;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-capture:hover {
+            background-color: #4338ca;
+        }
+
+        #scan-status {
+            margin-top: 10px;
+            font-weight: 600;
+            min-height: 24px;
+        }
+
+        .success-msg { color: green; }
+        .error-msg { color: red; }
+        .loading-msg { color: orange; }
+
+        /* Student List */
+        .header-card {
+            background: white;
+            padding: 16px;
+            border-radius: 14px;
+            border: 1px solid #f1f5f9;
+            margin-bottom: 16px;
+        }
+
+        .student-card {
+            background: white;
+            padding: 14px;
+            border-radius: 14px;
+            border: 1px solid #f1f5f9;
+            margin-bottom: 12px;
+        }
+
+        .student-card.is-present {
+            border-left: 4px solid #22c55e;
+        }
+
+        .card-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .student-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            background: #e5e7eb;
+        }
+
+        .avatar.present {
+            background: #22c55e;
+            color: white;
+        }
+
+        .student-name {
+            margin: 0;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .student-details {
+            margin: 0;
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        .badge-verified {
+            background: #dcfce7;
+            color: #166534;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+{% include 'header.html' %}
 <div class="page-container">
-    
+
     <!-- Camera Section -->
     <div class="camera-section">
         <h3 class="header-title">Face Attendance</h3>
         <p class="header-subtitle">Ensure good lighting and face the camera</p>
-        
+
         <video id="video-feed" autoplay playsinline></video>
         <canvas id="canvas" style="display:none;"></canvas>
+
         <br>
-        <button id="capture-btn" class="btn-capture">Scan Face & Mark Attendance</button>
+        <button id="capture-btn" class="btn-capture">
+            Scan Face & Mark Attendance
+        </button>
+
         <div id="scan-status"></div>
     </div>
 
-    <!-- Existing List -->
+    <!-- Attendance List -->
     <div class="header-card">
         <h2 class="header-title">Class Attendance List</h2>
     </div>
-    
-    <form method="GET">
-        <input type="text" name="classsearch" placeholder="Enter class : ">
-        <button type="submit">Search</button>
-    </form>
-    
+
     <div id="student-list-container">
         {% for item in students %}
-        <div class="student-card {% if item.status == 'present' %}is-present{% endif %}" id="student-card-{{ item.student.id }}">
+        <div class="student-card {% if item.status == 'present' %}is-present{% endif %}"
+             id="student-card-{{ item.student.id }}">
+
             <div class="card-row">
                 <div class="student-profile">
-                    <div class="avatar {% if item.status == 'present' %}present{% else %}absent{% endif %}">
+                    <div class="avatar {% if item.status == 'present' %}present{% endif %}">
                         {{ item.name|slice:":1" }}
                     </div>
                     <div>
                         <h4 class="student-name">{{ item.name }}</h4>
-                        <p class="student-details">Roll No: {{ item.roll }} • Class: {{ item.clas }}</p>
+                        <p class="student-details">
+                            Roll No: {{ item.roll }} • Class: {{ item.clas }}
+                        </p>
                     </div>
                 </div>
-                
-                <div class="status-container">
+
+                <div>
                     {% if item.status == 'present' %}
-                    <span class="badge-verified">
-                        Present
-                    </span>
+                        <span class="badge-verified">Present</span>
                     {% else %}
-                    <span style="color:red; font-size:0.75rem; font-weight:bold;">Absent</span>
+                        <span style="color:red; font-size:0.75rem; font-weight:bold;">
+                            Absent
+                        </span>
                     {% endif %}
                 </div>
             </div>
@@ -100,76 +202,72 @@
     </div>
 </div>
 
+{% include 'footer.html' %}
+
 <script>
-    // 1. Setup Camera
+    lucide.createIcons();
+</script>
+
+<script>
     const video = document.getElementById('video-feed');
     const canvas = document.getElementById('canvas');
     const captureBtn = document.getElementById('capture-btn');
     const statusDiv = document.getElementById('scan-status');
 
-    // Access Webcam
     navigator.mediaDevices.getUserMedia({ video: true })
-        .then(stream => {
-            video.srcObject = stream;
-        })
-        .catch(err => {
-            console.error("Error accessing webcam:", err);
-            statusDiv.innerHTML = "<span class='error-msg'>Camera access denied.</span>";
+        .then(stream => video.srcObject = stream)
+        .catch(() => {
+            statusDiv.innerHTML =
+                "<span class='error-msg'>Camera access denied.</span>";
         });
 
-    // 2. Handle Capture
     captureBtn.addEventListener('click', () => {
-        statusDiv.innerHTML = "<span class='loading-msg'>Scanning... Please wait.</span>";
-        
-        // Draw video frame to canvas
-        const context = canvas.getContext('2d');
+        statusDiv.innerHTML =
+            "<span class='loading-msg'>Scanning... Please wait.</span>";
+
+        const ctx = canvas.getContext('2d');
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        
-        // Get Base64 image data
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
         const imageData = canvas.toDataURL('image/jpeg');
 
-        // Send to Backend
         fetch('/ajax/scan_face/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                // Add CSRF token for security
                 'X-CSRFToken': getCookie('csrftoken')
             },
             body: 'image=' + encodeURIComponent(imageData)
         })
-        .then(response => response.json())
+        .then(res => res.json())
         .then(data => {
             if (data.success) {
-                statusDiv.innerHTML = `<span class='success-msg'>${data.message}</span>`;
-                // Reload page after 1.5 seconds to update the list
+                statusDiv.innerHTML =
+                    `<span class="success-msg">${data.message}</span>`;
                 setTimeout(() => location.reload(), 1500);
             } else {
-                statusDiv.innerHTML = `<span class='error-msg'>${data.message}</span>`;
+                statusDiv.innerHTML =
+                    `<span class="error-msg">${data.message}</span>`;
             }
         })
-        .catch(error => {
-            console.error('Error:', error);
-            statusDiv.innerHTML = "<span class='error-msg'>Server Error.</span>";
+        .catch(() => {
+            statusDiv.innerHTML =
+                "<span class='error-msg'>Server error.</span>";
         });
     });
 
-    // Helper to get CSRF token
     function getCookie(name) {
         let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
+        document.cookie.split(';').forEach(cookie => {
+            cookie = cookie.trim();
+            if (cookie.startsWith(name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
             }
-        }
+        });
         return cookieValue;
     }
 </script>
-{% endblock %}
+
+</body>
+</html>

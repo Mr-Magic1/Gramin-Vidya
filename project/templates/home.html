@@ -3,22 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HOME PAGE</title>
+    <title>Vidya Setu - Welcome</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS starts here */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e0f2fe 0%, #cbd5e1 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Login Card */
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 50px 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 420px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        h1 span {
+            color: #0284c7; /* Brand Blue */
+        }
+
+        p {
+            color: #64748b;
+            font-size: 15px;
+            margin-bottom: 40px;
+        }
+
+        /* Buttons Styling */
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .btn {
+            display: block;
+            text-decoration: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        /* Teacher Button - Solid Blue */
+        .btn-teacher {
+            background-color: #0284c7;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
+        }
+
+        .btn-teacher:hover {
+            background-color: #0369a1;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(2, 132, 199, 0.3);
+        }
+
+        /* Student Button - Outline Blue */
+        .btn-student {
+            background-color: transparent;
+            color: #0284c7;
+            border: 2px solid #0284c7;
+        }
+
+        .btn-student:hover {
+            background-color: #0284c7;
+            color: #ffffff;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(2, 132, 199, 0.2);
+        }
+
+        /* Simple animation on load */
+        .login-card {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+    </style>
 </head>
 <body>
-    <h1> Welcome to Vidya Setu Platform </h1>
 
-    <div>
-        <form action="{% url 'login' %}">
-            <button>Login as a teacher</button>
-        </form>
-        <form action="{% url 'student' %}">
-            <button>Login as a student</button>
-        </form>
+    <div class="login-card">
+        <h1>Welcome to <span>Vidya Setu</span></h1>
+        <p>Choose your role to get started</p>
+        
+        <div class="btn-container">
+            <a href="{% url 'login' %}" class="btn btn-teacher">Login as a Teacher</a>
+            <a href="{% url 'student' %}" class="btn btn-student">Login as a Student</a>
+        </div>
     </div>
 
 </body>
 </html>
-
-
-

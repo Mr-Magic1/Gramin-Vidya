@@ -23,7 +23,6 @@ def student_profile(request):
         username = request.POST.get('username', '').strip()
         password = request.POST.get('password', '').strip()
 
-        # 1️⃣ Extract mobile number from username
         mobile = "".join(ch for ch in username if ch.isdigit())
 
         if not mobile:
@@ -31,18 +30,11 @@ def student_profile(request):
             return render(request, 'student_profile.html', context)
 
         try:
-            # 2️⃣ Get student by mobile number
             student = Student.objects.get(mobile=mobile)
-
-            # 3️⃣ Build expected username
             first_name = student.first_name.upper()
             expected_username = first_name + student.mobile
-
-            # 4️⃣ Build expected password
             dob_year = student.dob.year
             expected_password = first_name[:4] + str(dob_year)
-
-            # 5️⃣ Validate username & password
             if username == expected_username and password == expected_password:
                 context['student'] = student
                 return render(request, 'student_profile.html', context)
@@ -129,7 +121,6 @@ def dashboard(request):
 def submit_student(request):
     reply = ""
     if request.method == "POST":
-        # Get POST data
         first_name=request.POST.get('first_name')
         last_name=request.POST.get('last_name')
         clas = request.POST.get("clas")
@@ -137,9 +128,8 @@ def submit_student(request):
         address = request.POST.get("address", "")
         guardian = request.POST.get("guard")
         mobile = request.POST.get("mobile")
-        dob = request.POST.get("dob")  # format: YYYY-MM-DD
+        dob = request.POST.get("dob") 
         student_img = request.FILES.get("student_img")
-            # Create Student object
         student = Student.objects.create(
             first_name=first_name,
             last_name=last_name,
@@ -159,17 +149,15 @@ def submit_student(request):
 @login_required(login_url='login')
 def attendance(request):
     students = []
-    
-    # Filter based on user (Teacher)
     if request.user.username == "shrey":
         students = Student.objects.filter(clas__icontains=5)
     elif request.user.username == "Khushboo":
         students = Student.objects.filter(clas__icontains=4)
+    elif request.user.username=='Aman':
+        students=Student.objects.filter(clas__icontains=3)
     else:
-        # Default fallback if user matches neither
         students = Student.objects.all()
 
-    # Search Logic
     if request.method == "GET":
         clas_search = request.GET.get('classsearch')
         name_search = request.GET.get('namesearch')
@@ -178,11 +166,8 @@ def attendance(request):
             students = students.filter(clas__icontains=clas_search)
         if name_search:
             students = students.filter(name__icontains=name_search)
-    
-    # Process students to check if they are present today
     student_list = []
     today = timezone.now().date()
-    
     for s in students:
         status = 'absent'
         if s.last_present == today:
@@ -201,9 +186,6 @@ def attendance(request):
 @login_required(login_url='login')
 def add_student(request):
     return render(request,'add_student.html')
-
-
-# --- NEW FACE RECOGNITION LOGIC ---
 
 @csrf_exempt
 def scan_face_attendance(request):
@@ -266,9 +248,6 @@ def scan_face_attendance(request):
 
     return JsonResponse({'success': False, 'message': 'Invalid request'})
 
-
-# --- RESULT & AUTH VIEWS (Kept same mostly) ---
-
 @login_required(login_url='login')
 def result(request):
     return render(request,'result.html')
@@ -283,6 +262,8 @@ def update_result(request):
             name=request.POST.get('name'),
             clas=request.POST.get('clas'),
             roll=request.POST.get('roll'),
+            dob=request.POST.get('dob'),
+            mobile=request.POST.get('mob'),
             guard=request.POST.get('guard'),
             hmath=request.POST.get('hmath'),
             hsci=request.POST.get('hsci'),
@@ -351,7 +332,6 @@ def show_result(request):
 
     return render(request, 'show_result.html', {'results': results})
 
-# --- AUTH VIEWS ---
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from accounts.forms import RegistrationForm
@@ -386,4 +366,4 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     messages.success(request, 'You have been logged out.')
-    return redirect('login')
+    return render(request,'home.html')

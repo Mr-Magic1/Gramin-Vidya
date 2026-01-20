@@ -2,21 +2,88 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Student Result</title>
+
     <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #ffffff;
+            margin: 0;
+            padding: 30px;
+            color: #000;
+        }
+
+        .report-card {
+            max-width: 900px;
+            margin: 0 auto 60px auto;
+            border: 2px solid #000;
+            padding: 25px;
+        }
+
+        .school-title {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .school-title h1 {
+            margin: 0;
+            font-size: 24px;
+            text-transform: uppercase;
+        }
+
+        .school-title p {
+            margin: 5px 0 0;
+            font-size: 14px;
+        }
+
+        .student-info {
+            margin-bottom: 20px;
+        }
+
+        .student-info p {
+            margin: 4px 0;
+            font-size: 15px;
+        }
+
         table {
             border-collapse: collapse;
             width: 100%;
-            margin-bottom: 40px;
+            margin-top: 15px;
         }
+
         th, td {
-            border: 1px solid #333;
+            border: 1px solid #000;
             padding: 8px;
             text-align: center;
+            font-size: 14px;
         }
+
         th {
             background-color: #f2f2f2;
+        }
+
+        .total-row th {
+            font-weight: bold;
+        }
+
+        .grade {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .page-break {
+            page-break-after: always;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+            }
+            .report-card {
+                border: 1px solid #000;
+                margin: 0 auto;
+            }
         }
     </style>
 </head>
@@ -24,79 +91,97 @@
 <body>
 
 {% for student in results %}
-<h2>Name : {{student.name}} </h2>
-<h2>Roll No. : {{student.roll}} </h2>
-<h2>Class : {{student.clas}} </h2>
-<h2>Date of Birth : {{student.dob}} </h2>
-<h2>Guardian Name : {{student.guard}} </h2>
 
+<div class="report-card">
 
-<table>
-    <tr>
-        <th>Subject</th>
-        <th colspan="2">Half Yearly</th>
-        <th colspan="2">Final Exam</th>
-        <th colspan="2">Total</th>
-    </tr>
-    <tr>
-        <td>Maths</td>
-        <td>{{ student.hmath }}</td>
-        <td>100</td>
-        <td>{{ student.fmath }}</td>
-        <td>100</td>
-        <td>{{ student.maths_total }}</td>
-        <td>200</td>
-    </tr>
-    <tr>
-        <td>Science</td>
-        <td>{{ student.hsci }}</td>
-        <td>100</td>
-        <td>{{ student.fsci }}</td>
-        <td>100</td>
-        <td>{{ student.sci_total }}</td>
-        <td>200</td>
-    </tr>
-    <tr>
-        <td>History</td>
-        <td>{{ student.hhis }}</td>
-        <td>100</td>
-        <td>{{ student.fhis }}</td>
-        <td>100</td>
-        <td>{{ student.his_total }}</td>
-        <td>200</td>
-    </tr>
-    <tr>
-        <td>English</td>
-        <td>{{ student.heng }}</td>
-        <td>100</td>
-        <td>{{ student.feng }}</td>
-        <td>100</td>
-        <td>{{ student.eng_total }}</td>
-        <td>200</td>
-    </tr>
-    <tr>
-        <td>Hindi</td>
-        <td>{{ student.hhindi }}</td>
-        <td>100</td>
-        <td>{{ student.fhindi }}</td>
-        <td>100</td>
-        <td>{{ student.hindi_total }}</td>
-        <td>200</td>
-    </tr>
-    <tr>
-        <th>Total</th>
-        <th>{{ student.half_total }}</th>
-        <td>500</td>
-        <th>{{ student.final_total }}</th>
-        <td>500</td>
-        <th>{{ student.grand_total }}</td>
-        <td>1000</td>
-    </tr>
-</table>
+    <div class="school-title">
+        <h1>Academic Progress Report</h1>
+    </div>
 
-<h2>Grade : {{student.grade}} </h2>
+    <div class="student-info">
+        <p><strong>Name:</strong> {{ student.name }}</p>
+        <p><strong>Roll No:</strong> {{ student.roll }}</p>
+        <p><strong>Class:</strong> {{ student.clas }}</p>
+        <p><strong>Date of Birth:</strong> {{ student.dob }}</p>
+        <p><strong>Guardian Name:</strong> {{ student.guard }}</p>
+    </div>
 
-<hr style="border: 3px solid black; margin: 30px 0;">
+    <table>
+        <tr>
+            <th>Subject</th>
+            <th colspan="2">Half Yearly</th>
+            <th colspan="2">Final Exam</th>
+            <th colspan="2">Total</th>
+        </tr>
+
+        <tr>
+            <td>Maths</td>
+            <td>{{ student.hmath }}</td>
+            <td>100</td>
+            <td>{{ student.fmath }}</td>
+            <td>100</td>
+            <td>{{ student.maths_total }}</td>
+            <td>200</td>
+        </tr>
+
+        <tr>
+            <td>Science</td>
+            <td>{{ student.hsci }}</td>
+            <td>100</td>
+            <td>{{ student.fsci }}</td>
+            <td>100</td>
+            <td>{{ student.sci_total }}</td>
+            <td>200</td>
+        </tr>
+
+        <tr>
+            <td>History</td>
+            <td>{{ student.hhis }}</td>
+            <td>100</td>
+            <td>{{ student.fhis }}</td>
+            <td>100</td>
+            <td>{{ student.his_total }}</td>
+            <td>200</td>
+        </tr>
+
+        <tr>
+            <td>English</td>
+            <td>{{ student.heng }}</td>
+            <td>100</td>
+            <td>{{ student.feng }}</td>
+            <td>100</td>
+            <td>{{ student.eng_total }}</td>
+            <td>200</td>
+        </tr>
+
+        <tr>
+            <td>Hindi</td>
+            <td>{{ student.hhindi }}</td>
+            <td>100</td>
+            <td>{{ student.fhindi }}</td>
+            <td>100</td>
+            <td>{{ student.hindi_total }}</td>
+            <td>200</td>
+        </tr>
+
+        <tr class="total-row">
+            <th>Total</th>
+            <th>{{ student.half_total }}</th>
+            <th>500</th>
+            <th>{{ student.final_total }}</th>
+            <th>500</th>
+            <th>{{ student.grand_total }}</th>
+            <th>1000</th>
+        </tr>
+    </table>
+
+    <div class="grade">
+        Grade: {{ student.grade }}
+    </div>
+
+</div>
+
+<div class="page-break"></div>
 
 {% empty %}
 <p>No student records found.</p>

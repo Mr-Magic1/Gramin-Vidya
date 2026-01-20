@@ -1,31 +1,170 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Result Entry</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #f39c12;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
 
-{% block content %}
-<form method="POST" action="{% url 'update_result' %}">
-    {% csrf_token %}
-    <input type="text" name="name" placeholder="Enter the name of the student: "><br>
-    <input type="number" name="clas" placeholder="Enter the class: "><br>
-    <input type="number" name="roll" placeholder="Enter the roll number: "><br>
-    <input type="text" name="guard" placeholder="Enter the Father/Mother Name: "><br>
-    <input type="text" name="mobile" placeholder="1234567890" required maxlength="10"><br>
-    <input type="date" name="dob" required><br>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            margin: 0;
+        }
 
-    <h2>Enter the marks in Half Yearly</h2><br>
-    <input type="number" name="hmath" placeholder="Enter Marks in maths: "><br>
-    <input type="number" name="hsci" placeholder="Enter Marks in science: "><br>
-    <input type="number" name="hhis" placeholder="Enter Marks in history: "><br>
-    <input type="number" name="heng" placeholder="Enter Marks in english: "><br>
-    <input type="number" name="hhindi" placeholder="Enter Marks in hindi: "><br>
-    <h2>Enter the marks in final exam</h2><br>
-    <input type="number" name="fmath" placeholder="Enter Marks in maths: "><br>
-    <input type="number" name="fsci" placeholder="Enter Marks in science: "><br>
-    <input type="number" name="fhis" placeholder="Enter Marks in history: "><br>
-    <input type="number" name="feng" placeholder="Enter Marks in english: "><br>
-    <input type="number" name="fhindi" placeholder="Enter Marks in hindi: "><br>
-    <button type="submit">Upload</button>
-</form> 
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 600px;
+            animation: fadeIn 0.8s ease-in-out;
+        }
 
-<h3>{{reply}}</h3>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid var(--primary-color);
+            display: inline-block;
+            padding-bottom: 10px;
+            width: 100%;
+        }
 
-{% endblock %}
+        .section-title {
+            background: #f8f9fa;
+            padding: 10px;
+            border-left: 5px solid var(--secondary-color);
+            margin: 20px 0;
+            font-weight: bold;
+            color: #444;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 8px rgba(74, 144, 226, 0.3);
+        }
+
+        .grid-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background: #357abd;
+        }
+
+        .school-icon {
+            text-align: center;
+            font-size: 50px;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        main{
+            display: flex;
+            justify-content: center;
+            padding: 30px;
+        }
+    </style>
+</head>
+<body>
+{% include 'header.html' %}
+<main>
+    <div class="container">
+    <div class="school-icon"><i class="fas fa-graduation-cap"></i></div>
+    <h2>Student Progress Portal</h2>
+
+    <form method="POST" action="{% url 'update_result' %}">
+        {% csrf_token %}
+
+        <div class="section-title">Personal Details</div>
+        <div class="form-group"><input type="text" placeholder="Student Name" name="name" required></div>
+        <div class="grid-inputs">
+            <input type="text" placeholder="Class" name="clas">
+            <input type="number" placeholder="Roll Number" name="roll">
+        </div>
+        <div class="form-group" style="margin-top:15px;"><input type="text" placeholder="Father/Mother Name" name="guard"></div>
+        <div class="grid-inputs">
+            <input type="tel" placeholder="Mobile Number" name="mob">
+            <input type="date" name="dob">
+        </div>
+
+        <div class="section-title">Half Yearly Marks</div>
+        <div class="grid-inputs">
+            <input type="number" placeholder="Maths" name="hmath">
+            <input type="number" placeholder="Science" name="hsci">
+            <input type="number" placeholder="History" name="hhis">
+            <input type="number" placeholder="English" name="heng">
+            <input type="number" placeholder="Hindi" style="grid-column: span 2;" name="hhindi">
+        </div>
+
+        <div class="section-title">Final Exam Marks</div>
+        <div class="grid-inputs">
+            <input type="number" placeholder="Maths" name="fmath">
+            <input type="number" placeholder="Science" name="fsci">
+            <input type="number" placeholder="History" name="fhis">
+            <input type="number" placeholder="English" name="feng">
+            <input type="number" placeholder="Hindi" style="grid-column: span 2;" name="fhindi">
+        </div>
+
+        <button type="submit">Upload Result <i class="fas fa-cloud-upload-alt"></i></button>
+    </form>
+
+    <div style="text-align:center; margin-top:15px; color:green; font-weight:bold;">
+        {{reply}}
+    </div>
+</div>
+
+</main>
+
+{% include 'footer.html' %}
+<script>
+    lucide.createIcons();
+</script>
+
+</body>
+</html>

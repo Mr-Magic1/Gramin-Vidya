@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VidyaSetu - Rural Attendance</title>
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* Base Reset & Fonts */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -16,20 +14,19 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f8fafc; /* slate-50 */
-            color: #0f172a; /* slate-900 */
+            background-color: #f8fafc; 
+            color: #0f172a; 
             min-height: 100vh;
-            padding-bottom: 80px; /* Space for fixed footer */
+            padding-bottom: 80px; 
         }
 
-        /* Header Styles */
         .app-header {
-            background-color: #4338ca; /* indigo-700 */
+            background-color: #4338ca; 
             color: white;
-            padding: 48px 16px 32px 16px; /* pt-12 pb-8 px-4 */
+            padding: 48px 16px 32px 16px; 
             border-bottom-left-radius: 2.5rem;
             border-bottom-right-radius: 2.5rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); 
             position: relative;
             z-index: 10;
         }
@@ -42,7 +39,7 @@
         }
 
         .brand-title {
-            font-size: 1.5rem; /* text-2xl */
+            font-size: 1.5rem; 
             font-weight: 700;
             display: flex;
             align-items: center;
@@ -50,20 +47,19 @@
         }
 
         .brand-subtitle {
-            color: #c7d2fe; /* indigo-200 */
-            font-size: 0.875rem; /* text-sm */
+            color: #c7d2fe; 
+            font-size: 0.875rem; 
             margin-top: 4px;
         }
 
-        /* Header Icons */
         .icon-brand {
-            color: #a5b4fc; /* indigo-300 */
+            color: #a5b4fc; 
         }
 
         .btn-logout {
-            background-color: #4f46e5; /* indigo-600 */
+            background-color: #4f46e5; 
             padding: 8px;
-            border-radius: 9999px; /* full */
+            border-radius: 9999px; 
             display: flex;
             align-items: center;
             justify-content: center;
@@ -72,31 +68,29 @@
         }
 
         .btn-logout:hover {
-            background-color: #6366f1; /* indigo-500 */
+            background-color: #6366f1; 
         }
 
         .icon-logout {
-            color: #e0e7ff; /* indigo-100 */
+            color: #e0e7ff; 
         }
 
-        /* Main Content Area */
         .main-container {
-            max-width: 28rem; /* max-w-md */
+            max-width: 28rem; 
             margin: 0 auto;
             position: relative;
-            margin-top: -16px; /* -mt-4 */
+            margin-top: -16px; 
             z-index: 20;
             padding: 0 16px;
         }
 
-        /* Bottom Navigation */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
             background-color: #ffffff;
-            border-top: 1px solid #e2e8f0; /* slate-200 */
+            border-top: 1px solid #e2e8f0; 
             display: flex;
             justify-content: space-between;
             padding: 12px 24px;
@@ -117,19 +111,17 @@
             font-weight: 500;
         }
 
-        /* Active State Helpers */
         .nav-link.active {
-            color: #4f46e5; /* indigo-600 */
+            color: #4f46e5;
         }
 
         .nav-link.inactive {
-            color: #94a3b8; /* slate-400 */
+            color: #94a3b8; 
         }
     </style>
 </head>
 <body>
 
-    <!-- Header (Only show if logged in) -->
     <header class="app-header">
         <div class="header-content">
             <div>
@@ -143,42 +135,54 @@
                 
             </div>
             {% if user.is_authenticated %}
-            Logged in as {{ user.username }} | <a href="{% url 'logout' %}">Logout</a>
+            Logged in as {{ user.username }} 
+            
+            {% if user.username == "Khushboo" %}
+                <h4>Class teacher of class 4</h4>
+            {% endif %}
+
+            <a style="color:red" href="{% url 'logout' %}">Logout</a>
+            
             {% else %}
             <a href="{% url 'login' %}">Login</a> | <a href="{% url 'register' %}">Register</a>
             {% endif %}
 
             <div >
-                <a href="{% url 'result' %}" style="color: red;">Update Result</a>
+                
             </div>
             <div >
-                <a href="{% url 'show_result' %}" style="color: red;">Show Result</a>
+                
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="main-container">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Navigation (Only show if logged in) -->
     
     <nav class="bottom-nav">
-        <!-- Dashboard Link -->
-        <a href="{% url 'dashboard' %}" class="nav-link {% if view == 'dashboard' %}active{% else %}inactive{% endif %}">
+        <a href="{% url 'dashboard' %}" class="nav-link">
             <i data-lucide="bar-chart-3" width="22"></i>
             <span class="nav-text">Reports</span>
         </a>
 
-        <!-- Attendance Link -->
-        <a href="{% url 'attendance' %}" class="nav-link {% if view == 'attendance' %}active{% else %}inactive{% endif %}">
+        <a href="{% url 'result' %}" class="nav-link">
+            <i data-lucide="edit-3" width="22"></i>
+            <span class="nav-text">Update Result</span>
+        </a>
+
+        <a href="{% url 'attendance' %}" class="nav-link">
             <i data-lucide="scan-face" width="22"></i>
             <span class="nav-text">Smart Attd.</span>
         </a>
 
-        <!-- Add Student Link -->
-        <a href="{% url 'add_student' %}" class="nav-link {% if view == 'add' %}active{% else %}inactive{% endif %}">
+        <a href="{% url 'show_result' %}" class="nav-link">
+            <i data-lucide="file-text" width="22"></i>    
+            <span class="nav-text">Show Result</span> 
+        </a>
+
+        <a href="{% url 'add_student' %}" class="nav-link">
             <i data-lucide="plus" width="22"></i>
             <span class="nav-text">Enroll</span>
         </a>
