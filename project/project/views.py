@@ -203,19 +203,19 @@ def add_student(request):
     return render(request, 'add_student.html')
 
 
-@csrf_exempt # Sometimes needed if JS fetch doesn't send CSRF token correctly
+# --- Add this Global Dictionary outside the function ---
+# This stores {student_id: numpy_array_of_face_encoding}
+student_encodings_cache = {} 
+
+@csrf_exempt
 def scan_face_attendance(request):
-    """
-    Receives a Base64 image, identifies the student, and marks attendance.
-    Optimized to prevent crashes.
-    """
     if request.method == 'POST':
         try:
             image_data = request.POST.get('image')
             if not image_data:
                 return JsonResponse({'success': False, 'message': 'No image data received'})
 
-            # 1. Decode base64
+            # 1. Decode base64 from Webcam
             try:
                 format, imgstr = image_data.split(';base64,') 
                 ext = format.split('/')[-1]
@@ -223,7 +223,7 @@ def scan_face_attendance(request):
             except ValueError:
                  return JsonResponse({'success': False, 'message': 'Invalid image format'})
 
-            # 2. Process uploaded image
+            # 2. Process Webcam Image (Only done once per request)
             unknown_image = face_recognition.load_image_file(data)
             unknown_encodings = face_recognition.face_encodings(unknown_image)
             
@@ -232,42 +232,55 @@ def scan_face_attendance(request):
             
             unknown_encoding = unknown_encodings[0]
 
-            # 3. Compare with DB Students
-            # Only fetch students who actually have an image
+            # 3. Compare with DB Students (Optimized Loop)
             students = Student.objects.exclude(student_img='')
             
             for student in students:
                 try:
-                    # FIX: Check if file actually exists on disk to prevent crash
-                    if not student.student_img or not os.path.exists(student.student_img.path):
-                        continue
+                    # --- CACHE LOGIC START ---
+                    known_encoding = None
 
-                    # Load saved image
-                    known_image = face_recognition.load_image_file(student.student_img.path)
-                    known_encodings = face_recognition.face_encodings(known_image)
-                    
-                    if not known_encodings:
-                        continue # No face found in the profile picture
+                    # Check if we already have this student's face math in memory
+                    if student.id in student_encodings_cache:
+                        known_encoding = student_encodings_cache[student.id]
+                    else:
+                        # Only run this heavy code if NOT in cache
+                        if not student.student_img or not os.path.exists(student.student_img.path):
+                            continue
+
+                        known_image = face_recognition.load_image_file(student.student_img.path)
+                        known_encodings = face_recognition.face_encodings(known_image)
                         
-                    known_encoding = known_encodings[0]
+                        if known_encodings:
+                            known_encoding = known_encodings[0]
+                            # Save to cache for next time!
+                            student_encodings_cache[student.id] = known_encoding
+                        else:
+                            # If profile pic has no face, mark as None to skip next time
+                            student_encodings_cache[student.id] = None
+                            continue
                     
-                    # Compare (tolerance 0.5 is stricter, 0.6 is standard)
-                    results = face_recognition.compare_faces([known_encoding], unknown_encoding, tolerance=0.5)
+                    # If cached value is None (invalid profile pic), skip
+                    if known_encoding is None:
+                        continue
+                    # --- CACHE LOGIC END ---
                     
-                    if results[0]:
+                    # 4. Fast Comparison (NumPy Math)
+                    # This is instant because we are comparing arrays, not processing images
+                    matches = face_recognition.compare_faces([known_encoding], unknown_encoding, tolerance=0.5)
+                    
+                    if matches[0]:
                         student.last_present = timezone.now().date()
                         student.save()
                         
-                        # FIX: Use correct field names (first_name/last_name)
                         full_name = f"{student.first_name} {student.last_name}"
-                        
                         return JsonResponse({
                             'success': True, 
                             'message': f'Attendance marked for {full_name}',
                             'student_name': full_name
                         })
+
                 except Exception as inner_e:
-                    # Log this error silently and continue to next student
                     print(f"Error processing student {student.id}: {inner_e}")
                     continue
 
