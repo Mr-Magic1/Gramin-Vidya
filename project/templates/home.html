@@ -3,12 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vidya Setu - Welcome</title>
+    <title>Gramin Vidya - Bridging the Divide</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* CSS starts here */
+        :root {
+            --primary: #0284c7;       /* Brand Blue */
+            --primary-dark: #0369a1;
+            --accent: #0ea5e9;
+            --success: #10b981;       /* Green for modern features */
+            --warning: #ef4444;       /* Red for old methods */
+            --bg-gradient: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            --glass: rgba(255, 255, 255, 0.95);
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --radius: 16px;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -17,111 +30,462 @@
         }
 
         body {
-            background: linear-gradient(135deg, #e0f2fe 0%, #cbd5e1 100%);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background: var(--bg-gradient);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* --- Background Animation --- */
+        .background-anim {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
             overflow: hidden;
         }
 
-        /* Login Card */
-        .login-card {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 50px 40px;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            width: 100%;
-            max-width: 420px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(10px);
+        .background-anim span {
+            position: absolute;
+            bottom: -50px;
+            font-size: 2.5rem;
+            color: rgba(2, 132, 199, 0.1);
+            animation: floatUp 15s linear infinite;
         }
 
-        h1 {
-            font-weight: 600;
-            color: #1e293b;
-            font-size: 28px;
-            margin-bottom: 8px;
+        .background-anim span:nth-child(1) { left: 10%; animation-duration: 12s; animation-delay: 0s; }
+        .background-anim span:nth-child(2) { left: 20%; animation-duration: 15s; animation-delay: 2s; font-size: 2rem; }
+        .background-anim span:nth-child(3) { left: 35%; animation-duration: 18s; animation-delay: 4s; }
+        .background-anim span:nth-child(4) { left: 50%; animation-duration: 14s; animation-delay: 1s; font-size: 3rem; }
+        .background-anim span:nth-child(5) { left: 65%; animation-duration: 16s; animation-delay: 5s; }
+        .background-anim span:nth-child(6) { left: 80%; animation-duration: 13s; animation-delay: 3s; font-size: 2rem; }
+        .background-anim span:nth-child(7) { left: 90%; animation-duration: 19s; animation-delay: 6s; }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
         }
 
-        h1 span {
-            color: #0284c7; /* Brand Blue */
+        /* --- Layout Utilities --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
 
-        p {
-            color: #64748b;
-            font-size: 15px;
-            margin-bottom: 40px;
+        .section {
+            padding: 60px 0;
         }
 
-        /* Buttons Styling */
-        .btn-container {
+        /* --- Navigation / Header --- */
+        nav {
+            padding: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* --- Hero Section --- */
+        .hero {
             display: flex;
             flex-direction: column;
-            gap: 16px;
-        }
-
-        .btn {
-            display: block;
-            text-decoration: none;
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-        }
-
-        /* Teacher Button - Solid Blue */
-        .btn-teacher {
-            background-color: #0284c7;
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
-        }
-
-        .btn-teacher:hover {
-            background-color: #0369a1;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(2, 132, 199, 0.3);
-        }
-
-        /* Student Button - Outline Blue */
-        .btn-student {
-            background-color: transparent;
-            color: #0284c7;
-            border: 2px solid #0284c7;
-        }
-
-        .btn-student:hover {
-            background-color: #0284c7;
-            color: #ffffff;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(2, 132, 199, 0.2);
-        }
-
-        /* Simple animation on load */
-        .login-card {
+            align-items: center;
+            text-align: center;
+            padding: 60px 20px;
             animation: fadeIn 0.8s ease-out;
         }
 
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero h1 span {
+            color: var(--primary);
+            background: linear-gradient(120deg, #0284c7 0%, #0ea5e9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            max-width: 700px;
+            margin-bottom: 40px;
+        }
+
+        /* --- Login Card (Centered in Hero) --- */
+        .auth-card {
+            background: var(--glass);
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            width: 100%;
+            max-width: 400px;
+            margin-top: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* --- Comparison Section --- */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .card-old { border-top: 5px solid var(--warning); }
+        .card-new { border-top: 5px solid var(--success); }
+
+        /* Specific Animations for Cards */
+        .pencil-anim {
+            display: inline-block;
+            animation: writing 2s infinite ease-in-out;
+            transform-origin: bottom left;
+        }
+
+        .student-anim {
+            display: inline-block;
+            animation: bounceStudent 2s infinite ease-in-out;
+        }
+
+        @keyframes writing {
+            0% { transform: rotate(0deg) translate(0, 0); }
+            25% { transform: rotate(-10deg) translate(-2px, 0); }
+            50% { transform: rotate(0deg) translate(0, 0); }
+            75% { transform: rotate(5deg) translate(2px, 0); }
+            100% { transform: rotate(0deg) translate(0, 0); }
+        }
+
+        @keyframes bounceStudent {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-5px) scale(1.1); }
+        }
+
+        .list-item {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            color: var(--text-light);
+        }
+
+        .icon { font-size: 1.2rem; }
+        .icon-x { color: var(--warning); }
+        .icon-check { color: var(--success); }
+
+        /* --- AI Section --- */
+        .ai-section {
+            background: white;
+            border-radius: 24px;
+            padding: 60px;
+            margin: 60px 0;
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+        }
+
+        .ai-content { flex: 1; }
+        .ai-visual { 
+            flex: 1; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+        }
+
+        .ai-badge {
+            display: inline-block;
+            background: #e0f2fe;
+            color: var(--primary);
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .feature-list {
+            margin-top: 30px;
+            list-style: none;
+        }
+
+        .feature-list li {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .scanner-animation {
+            width: 200px;
+            height: 200px;
+            border: 4px solid var(--primary);
+            border-radius: 20px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            background: #f8fafc;
+            overflow: hidden;
+        }
+
+        .scanner-line {
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: var(--success);
+            top: 0;
+            left: 0;
+            animation: scan 2s infinite linear;
+            box-shadow: 0 0 15px var(--success);
+            z-index: 2;
+        }
+
+        /* --- Animations --- */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
+        @keyframes scan {
+            0% { top: -10%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 110%; opacity: 0; }
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 768px) {
+            .comparison-grid, .ai-section {
+                grid-template-columns: 1fr;
+                flex-direction: column;
+                padding: 30px;
+                gap: 30px;
+            }
+            .hero h1 { font-size: 2.2rem; }
+            .auth-card { padding: 20px; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="login-card">
-        <h1>Welcome to <span>Vidya Setu</span></h1>
-        <p>Choose your role to get started</p>
-        
-        <div class="btn-container">
-            <a href="{% url 'login' %}" class="btn btn-teacher">Login as a Teacher</a>
-            <a href="{% url 'student' %}" class="btn btn-student">Login as a Student</a>
+    <!-- Floating Background Animation -->
+    <div class="background-anim">
+        <span>✏️</span>
+        <span>📚</span>
+        <span>🎓</span>
+        <span>🎒</span>
+        <span>📝</span>
+        <span>🏫</span>
+        <span>🖍️</span>
+    </div>
+
+    <div class="container">
+        <!-- Navbar -->
+        <nav>
+            <a href="#" class="logo">
+                <span>🎓</span> Gramin Vidya
+            </a>
+        </nav>
+
+        <!-- Hero Section -->
+        <div class="hero">
+            <h1>Bridging the <br><span>Digital Divide</span> in Rural Education</h1>
+            <p>
+                Gramin Vidya is an Offline-First Progressive Web App (PWA) designed to solve the connectivity crisis in rural Indian schools. It combines biometric authentication with seamless data synchronization.
+            </p>
+
+            <!-- Login Box (Preserved Django Logic) -->
+            <div class="auth-card">
+                <h3>Get Started</h3>
+                <p style="margin-bottom: 20px; font-size: 0.9rem; color: #64748b;">Select your role to continue</p>
+                <div class="btn-container">
+                    <!-- DO NOT CHANGE THESE URLs -->
+                    <a href="{% url 'login' %}" class="btn btn-primary">Login as Teacher</a>
+                    <a href="{% url 'student' %}" class="btn btn-outline">Login as Student</a>
+                </div>
+            </div>
         </div>
+
+        <!-- Transformation Section -->
+        <div class="section">
+            <h2 style="text-align: center; margin-bottom: 10px;">The Transformation</h2>
+            <p style="text-align: center; color: var(--text-light); margin-bottom: 30px;">How Gramin Vidya revolutionizes traditional processes</p>
+            
+            <div class="comparison-grid">
+                <!-- Old Way -->
+                <div class="card card-old">
+                    <h3><span class="pencil-anim">✏️</span> Traditional Method</h3>
+                    <div class="list-item">
+                        <span class="icon icon-x">❌</span>
+                        <div>
+                            <strong>Manual Registers</strong><br>
+                            Prone to physical damage and loss.
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <span class="icon icon-x">❌</span>
+                        <div>
+                            <strong>Time Consuming</strong><br>
+                            Teachers spend 20 mins/day on roll calls.
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <span class="icon icon-x">❌</span>
+                        <div>
+                            <strong>Data Silos</strong><br>
+                            Academic history is buried in paper piles.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- New Way -->
+                <div class="card card-new">
+                    <h3><span class="student-anim">🧑‍🎓</span> The Gramin Vidya Way</h3>
+                    <div class="list-item">
+                        <span class="icon icon-check">✅</span>
+                        <div>
+                            <strong>Biometric Auth</strong><br>
+                            Face recognition via OpenCV & Python.
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <span class="icon icon-check">✅</span>
+                        <div>
+                            <strong>Offline Sync</strong><br>
+                            Works without internet, syncs later.
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <span class="icon icon-check">✅</span>
+                        <div>
+                            <strong>Instant Analytics</strong><br>
+                            Real-time meal & grade tracking.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Feature Section -->
+        <div class="section">
+            <div class="ai-section">
+                <div class="ai-content">
+                    <span class="ai-badge">✨ New Feature</span>
+                    <h2>AI-Powered Attendance</h2>
+                    <p style="color: var(--text-light); margin-top: 15px;">
+                        Replacing roll calls with a quick scan. The system uses computer vision to identify students in milliseconds.
+                    </p>
+                    
+                    <ul class="feature-list">
+                        <li><span>📸</span> Zero-touch verification</li>
+                        <li><span>📍</span> Geo-tagged entries</li>
+                        <li><span>📊</span> Auto-calculation of daily stats</li>
+                    </ul>
+                </div>
+                
+                <div class="ai-visual">
+                    <!-- CSS Animation mimicking face scan -->
+                    <div class="scanner-animation">
+                        👤
+                        <div class="scanner-line"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer style="text-align: center; padding: 40px; color: var(--text-light); font-size: 0.9rem;">
+            <p>&copy; 2026 Gramin Vidya. Empowering Rural Education.</p>
+        </footer>
+
     </div>
 
 </body>
