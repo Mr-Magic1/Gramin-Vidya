@@ -2,91 +2,282 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Gramin Vidya</title>
+    
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
+    
     <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --bg-gradient: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            --glass: rgba(255, 255, 255, 0.95);
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
         body {
-            font-family: Arial, Helvetica, sans-serif;
-            background-color: #f5f5f5;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* --- Floating Background Animation --- */
+        .background-anim {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .background-anim span {
+            position: absolute;
+            bottom: -50px;
+            font-size: 2rem;
+            color: rgba(2, 132, 199, 0.08);
+            animation: floatUp 15s linear infinite;
+        }
+
+        .background-anim span:nth-child(1) { left: 10%; animation-duration: 12s; }
+        .background-anim span:nth-child(2) { left: 80%; animation-duration: 15s; animation-delay: 2s; }
+        .background-anim span:nth-child(3) { left: 40%; animation-duration: 18s; animation-delay: 1s; }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* --- Layout --- */
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
         }
 
         .login-box {
-            max-width: 400px;
-            margin: auto;
-            background: #ffffff;
-            border: 1px solid #ccc;
-            padding: 55px;
-            margin-top: 130px;
-            margin-bottom: 130px;
+            background: var(--glass);
+            width: 100%;
+            max-width: 420px;
+            padding: 40px;
+            border-radius: var(--radius);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            /* New Smoother Entry */
+            animation: expandBox 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; 
+            position: relative;
+            backdrop-filter: blur(10px);
+            opacity: 0; /* Initially hidden for animation */
+            transform: scale(0.95);
+        }
+
+        @keyframes expandBox {
+            from { opacity: 0; transform: scale(0.95) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* --- Content Animations --- */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         h2 {
             text-align: center;
-            margin-bottom: 20px;
+            color: var(--text-dark);
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 600;
+            opacity: 0;
+            animation: fadeInUp 0.5s ease forwards 0.3s; /* Delay 0.3s */
         }
 
-        p {
-            margin-bottom: 15px;
+        /* --- Form Styling --- */
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+            opacity: 0;
+            animation: fadeInUp 0.5s ease forwards;
+        }
+        
+        /* Stagger the appearance of inputs */
+        .input-group:nth-of-type(1) { animation-delay: 0.4s; }
+        .input-group:nth-of-type(2) { animation-delay: 0.5s; }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .input-group:focus-within label {
+            color: var(--primary);
         }
 
         input {
             width: 100%;
-            padding: 8px;
-            font-size: 14px;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #f8fafc;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.1);
+            transform: translateX(5px); /* Nudge animation on focus */
         }
 
         button {
             width: 100%;
-            padding: 10px;
-            font-size: 16px;
-            background: #2563eb;
-            color: #ffffff;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
             border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeInUp 0.5s ease forwards 0.6s; /* Delay 0.6s */
+        }
+
+        /* Shine/Glow Effect on Button Hover */
+        button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: 0.5s;
         }
 
         button:hover {
-            background: #1d4ed8;
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(2, 132, 199, 0.3);
+        }
+
+        button:hover::after {
+            left: 100%; /* Sweep the shine across */
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* --- Django Messages Styling --- */
+        .messages-container {
+            margin-top: 20px;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .alert.error { background-color: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+        .alert.success { background-color: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+        .alert.warning { background-color: #fef9c3; color: #a16207; border: 1px solid #fde047; }
+
+        header, footer {
+            z-index: 10;
         }
     </style>
 </head>
 
 <body>
 
-{% include 'header.html' %}
+    <!-- Floating Background Animation -->
+    <div class="background-anim">
+        <span>✏️</span>
+        <span>🔐</span>
+        <span>🎓</span>
+    </div>
 
-<div class="login-box">
-    <h2>Login</h2>
+    {% include 'header.html' %}
 
-    <form method="post" action="{% url 'login' %}">
-        {% csrf_token %}
+    <div class="main-wrapper">
+        <div class="login-box">
+            <h2>Welcome Back</h2>
 
-        <p>
-            <label>Username</label><br>
-            <input type="text" name="username" required>
-        </p>
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
 
-        <p>
-            <label>Password</label><br>
-            <input type="password" name="password" required>
-        </p>
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" name="username" placeholder="Enter your ID" required>
+                </div>
 
-        <button type="submit">Login</button>
-    </form>
-        {% if messages %}
-        {% for message in messages %}
-            <div class="alert {{ message.tags }}">
-                {{ message }}
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" name="password" placeholder="Enter your password" required>
+                </div>
+
+                <button type="submit">Login</button>
+            </form>
+
+            <!-- Django Messages Logic Preserved -->
+            {% if messages %}
+            <div class="messages-container">
+                {% for message in messages %}
+                    <div class="alert {{ message.tags }}">
+                        <span>{{ message }}</span>
+                    </div>
+                {% endfor %}
             </div>
-        {% endfor %}
-        {% endif %}
-</div>
+            {% endif %}
+        </div>
+    </div>
 
-{% include 'footer.html' %}
+    {% include 'footer.html' %}
 
-
-<script>
-    lucide.createIcons();
-</script>
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 </html>
