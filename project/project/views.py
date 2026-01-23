@@ -113,12 +113,27 @@ def dashboard(request):
     meal_count = present_count
     percentage = int((present_count / total_students) * 100) if total_students else 0
 
+    total3=Student.objects.filter(clas=3).count()
+    present3=Student.objects.filter(last_present=today,clas=3).count()
+    percentage3=int((present3 / total3) * 100) if total_students else 0
+
+    total4=Student.objects.filter(clas=4).count()
+    present4=Student.objects.filter(last_present=today,clas=4).count()
+    percentage4=int((present4 / total4) * 100) if total_students else 0
+
+    total5=Student.objects.filter(clas=5).count()
+    present5=Student.objects.filter(last_present=today,clas=5).count()
+    percentage5=int((present5 / total5) * 100) if total_students else 0
+
     context = {
         'date': today,
         'total_students': total_students,
         'present_count': present_count,
         'meal_count': meal_count,
-        'percentage': percentage
+        'percentage': percentage,
+        'percentage3':percentage3,
+        'percentage4':percentage4,
+        'percentage5':percentage5
     }
     return render(request, "dashboard.html", context)
 
@@ -331,7 +346,14 @@ def update_result(request):
 @login_required(login_url='login')
 def show_result(request):
     results = Result.objects.all()
-
+    
+    if request.user.username == "shrey":
+        results = results.filter(clas__icontains=5)
+    elif request.user.username == "Khushboo":
+        results = results.filter(clas__icontains=4)
+    elif request.user.username == 'Aman':
+        results = results.filter(clas__icontains=3)
+    
     for student in results:
         student.half_total = (
             student.hmath + student.hsci + student.hhis + 
