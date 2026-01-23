@@ -1,63 +1,241 @@
 <!-- 🐯 TIGER HEADER START -->
+<!-- Font Awesome CDN (Required for the icons to show) -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
 <style>
-/* All styles scoped under .tiger-hdr */
-.tiger-hdr {
-    background-color: #4338ca;
-    color: white;
-    padding: 48px 16px 32px;
-    border-bottom-left-radius: 2.5rem;
-    border-bottom-right-radius: 2.5rem;
-    box-shadow: 0 10px 15px -3px rgba(0,0,0,.1),
-                0 4px 6px -2px rgba(0,0,0,.05);
-}
+    /* All styles scoped under .tiger-hdr */
+    .tiger-hdr {
+        background-color: #4338ca;
+        color: white;
+        padding: 48px 16px 32px;
+        border-bottom-left-radius: 2.5rem;
+        border-bottom-right-radius: 2.5rem;
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,.1),
+                    0 4px 6px -2px rgba(0,0,0,.05);
+        position: relative;
+        overflow: hidden; /* Important for animations leaving the box */
+    }
 
-.tiger-hdr-box {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-}
+    .tiger-hdr-box {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        position: relative;
+        z-index: 10; /* Ensure text stays above animations */
+    }
 
-.tiger-hdr-brand {
-    display: flex;
-    flex-direction: column;
-}
+    .tiger-hdr-brand {
+        display: flex;
+        flex-direction: column;
+        cursor: default; /* Hint for hover effect */
+    }
+    
+    /* Wiggle effect on hover */
+    .tiger-hdr-brand:hover .tiger-hdr-icon {
+        animation: wiggle 0.5s ease-in-out;
+        color: #fbbf24; /* Flash yellow briefly */
+    }
 
-.tiger-hdr-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
+    .tiger-hdr-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
 
-.tiger-hdr-subtitle {
-    font-size: 0.875rem;
-    margin-top: 4px;
-    color: #c7d2fe;
-}
+    .tiger-hdr-subtitle {
+        font-size: 0.875rem;
+        margin-top: 4px;
+        color: #c7d2fe;
+    }
 
-.tiger-hdr-icon {
-    color: #a5b4fc;
-}
+    .tiger-hdr-icon {
+        color: #a5b4fc;
+        transition: color 0.3s;
+    }
 
-.tiger-hdr-auth {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 14px;
-}
+    .tiger-hdr-auth {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 14px;
+    }
 
-.tiger-hdr-link {
-    color: #e0e7ff;
-    text-decoration: none;
-}
+    .tiger-hdr-link {
+        color: #e0e7ff;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+    
+    .tiger-hdr-link:hover {
+        color: white;
+        text-decoration: underline;
+        text-underline-offset: 4px;
+    }
 
-.tiger-hdr-link.logout {
-    color: #fecaca;
-}
+    .tiger-hdr-link.logout {
+        color: #fecaca;
+    }
+
+    /* --- ANIMATION STYLES --- */
+
+    /* The Animation Container */
+    .animation-layer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none; /* Let clicks pass through */
+        z-index: 1;
+    }
+
+    /* 1. CLOUDS */
+    .cloud {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        z-index: 0;
+        animation: drift linear infinite;
+    }
+    /* Cloud Shapes */
+    .cloud::after, .cloud::before {
+        content: '';
+        position: absolute;
+        background: inherit;
+        border-radius: 50%;
+    }
+    .cloud::after { width: 50%; height: 100%; top: -40%; left: 15%; }
+    .cloud::before { width: 40%; height: 120%; top: -30%; right: 20%; }
+
+    .cloud-1 { width: 100px; height: 30px; top: 15%; left: -120px; animation-duration: 25s; }
+    .cloud-2 { width: 60px; height: 20px; top: 40%; left: -80px; animation-duration: 18s; animation-delay: 5s; }
+    .cloud-3 { width: 140px; height: 40px; top: 70%; left: -160px; animation-duration: 35s; animation-delay: 2s; opacity: 0.05; }
+
+    /* 2. FLOATING ACADEMIC SYMBOLS */
+    .school-symbol {
+        position: absolute;
+        color: rgba(255, 255, 255, 0.2);
+        font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; /* Playful font */
+        font-weight: bold;
+        z-index: 0;
+        animation: fadeFloat 6s ease-in-out infinite;
+    }
+    .sym-1 { top: 20%; left: 10%; font-size: 24px; animation-delay: 0s; } /* A+ */
+    .sym-2 { bottom: 30%; right: 25%; font-size: 20px; animation-delay: 2s; } /* 123 */
+    .sym-3 { top: 60%; left: 50%; font-size: 28px; animation-delay: 4s; } /* ∑ */
+    .sym-4 { top: 15%; right: 10%; font-size: 18px; animation-delay: 1s; } /* ? */
+
+    /* 3. FLYING PENCIL */
+    .flying-vehicle {
+        position: absolute;
+        display: flex;
+        align-items: flex-end; 
+        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+        left: -150px; 
+        bottom: 20px;
+        animation: flyAcross 18s linear infinite;
+        transform: rotate(-5deg);
+        z-index: 5;
+    }
+
+    .riders {
+        position: absolute;
+        bottom: 22px; 
+        left: 10px;
+        display: flex;
+        gap: 5px;
+        z-index: 2;
+    }
+
+    .rider {
+        font-size: 14px;
+        color: white;
+        animation: bounce 1s ease-in-out infinite alternate;
+    }
+    .rider:nth-child(2) { animation-delay: 0.2s; color: #e0e7ff; }
+    .rider:nth-child(3) { animation-delay: 0.4s; color: #c7d2fe; }
+
+    /* 4. STATIC READERS (Background) */
+    .reader-icon {
+        position: absolute;
+        color: rgba(255, 255, 255, 0.1); 
+        font-size: 40px;
+        z-index: 0;
+        animation: float 4s ease-in-out infinite;
+    }
+    .reader-1 { top: 10%; right: 20%; animation-delay: 0s; transform: rotate(10deg); }
+    .reader-2 { bottom: 15%; left: 15%; animation-delay: 1.5s; font-size: 30px; transform: rotate(-5deg); }
+    .reader-3 { top: 15%; left: 40%; animation-delay: 2.5s; font-size: 24px; opacity: 0.15; }
+
+    /* Keyframes */
+    @keyframes flyAcross {
+        0% { left: -150px; bottom: 10%; transform: rotate(-5deg); }
+        40% { bottom: 60%; }
+        100% { left: 100%; bottom: 20%; transform: rotate(5deg); }
+    }
+
+    @keyframes bounce {
+        from { transform: translateY(0); }
+        to { transform: translateY(-3px); }
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); }
+        50% { transform: translateY(-10px) rotate(var(--r, 0deg)); }
+    }
+
+    @keyframes drift {
+        from { left: -150px; }
+        to { left: 100%; }
+    }
+
+    @keyframes fadeFloat {
+        0%, 100% { opacity: 0; transform: translateY(10px) rotate(-10deg); }
+        50% { opacity: 0.4; transform: translateY(-10px) rotate(10deg); }
+    }
+
+    @keyframes wiggle {
+        0%, 100% { transform: rotate(0deg); }
+        25% { transform: rotate(-15deg); }
+        75% { transform: rotate(15deg); }
+    }
 </style>
 
 <header class="tiger-hdr">
+    <!-- Animation Layer -->
+    <div class="animation-layer">
+        
+        <!-- Drifting Clouds -->
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="cloud cloud-3"></div>
+
+        <!-- Floating Symbols -->
+        <div class="school-symbol sym-1">A+</div>
+        <div class="school-symbol sym-2">123</div>
+        <div class="school-symbol sym-3">∑</div>
+        <div class="school-symbol sym-4">?</div>
+
+        <!-- Background Readers -->
+        <i class="fa-solid fa-book-open-reader reader-icon reader-1" style="--r: 10deg"></i>
+        <i class="fa-solid fa-book-reader reader-icon reader-2" style="--r: -5deg"></i>
+        <i class="fa-solid fa-graduation-cap reader-icon reader-3" style="--r: 15deg"></i>
+
+        <!-- The Flying Pencil -->
+        <div class="flying-vehicle">
+            <div class="riders">
+                <i class="fa-solid fa-child rider"></i>
+                <i class="fa-solid fa-child-reaching rider"></i>
+                <i class="fa-solid fa-child rider"></i>
+            </div>
+            <!-- The Pencil Icon -->
+            <i class="fa-solid fa-pencil text-yellow-400 text-4xl" style="transform: rotate(135deg);"></i>
+        </div>
+    </div>
+
+    <!-- Main Content -->
     <div class="tiger-hdr-box">
 
         <div class="tiger-hdr-brand">
