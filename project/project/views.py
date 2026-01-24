@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.core.files.base import ContentFile
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.conf import settings # Needed for file paths
+from django.conf import settings 
 
 # Import your models
 from student.models import Student
@@ -33,7 +33,6 @@ def student_profile(request):
         username = request.POST.get('username', '').strip()
         password = request.POST.get('password', '').strip()
 
-        # Extract digits for mobile
         mobile = "".join(ch for ch in username if ch.isdigit())
 
         if not mobile:
@@ -42,13 +41,12 @@ def student_profile(request):
 
         try:
             student = Student.objects.get(mobile=mobile)
-            # Ensure safe slicing even if name is short
+
             first_name = student.first_name.upper() if student.first_name else ""
             
             expected_username = first_name + student.mobile
             dob_year = student.dob.year
             
-            # Safe slicing for password
             name_part = first_name[:4] if len(first_name) >= 4 else first_name
             expected_password = name_part + str(dob_year)
             
@@ -99,7 +97,7 @@ def student_result(request):
         elif student.grand_total > 500:
             grade = "B"
         elif student.grand_total > 350:
-            grade = "C" # Changed lowercase c to C for consistency
+            grade = "C" 
 
         student.grade = grade
 
@@ -172,9 +170,8 @@ def submit_student(request):
 
 @login_required(login_url='login')
 def attendance(request):
-    students = Student.objects.all() # Default all
+    students = Student.objects.all()
 
-    # Filter based on logged-in user (Teacher specific views)
     if request.user.username == "shrey":
         students = students.filter(clas__icontains=5)
     elif request.user.username == "Khushboo":
@@ -189,7 +186,6 @@ def attendance(request):
         if clas_search:              
             students = students.filter(clas__icontains=clas_search)
         if name_search:
-            # Assuming you want to search by first name
             students = students.filter(first_name__icontains=name_search)
             
     student_list = []
@@ -200,7 +196,6 @@ def attendance(request):
         if s.last_present == today:
             status = 'present'
         
-        # Construct full name safely
         full_name = f"{s.first_name} {s.last_name}"
             
         student_list.append({
@@ -218,27 +213,32 @@ def add_student(request):
     return render(request, 'add_student.html')
 
 
-# --- Add this Global Dictionary outside the function ---
-# This stores {student_id: numpy_array_of_face_encoding}
 student_encodings_cache = {} 
-
 @csrf_exempt
 def scan_face_attendance(request):
     if request.method == 'POST':
         try:
+            selected_class='all'
+            if request.user.username == "shrey":
+                selected_class='5'
+            elif request.user.username == "Khushboo":
+                selected_class='4'
+            elif request.user.username == 'Aman':
+                selected_class='3'
             image_data = request.POST.get('image')
+
+            if not selected_class:
+                return JsonResponse({'success': False, 'message': 'Please select a class first.'})
+
             if not image_data:
                 return JsonResponse({'success': False, 'message': 'No image data received'})
 
-            # 1. Decode base64 from Webcam
             try:
                 format, imgstr = image_data.split(';base64,') 
                 ext = format.split('/')[-1]
                 data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
             except ValueError:
                  return JsonResponse({'success': False, 'message': 'Invalid image format'})
-
-            # 2. Process Webcam Image (Only done once per request)
             unknown_image = face_recognition.load_image_file(data)
             unknown_encodings = face_recognition.face_encodings(unknown_image)
             
@@ -247,19 +247,23 @@ def scan_face_attendance(request):
             
             unknown_encoding = unknown_encodings[0]
 
-            # 3. Compare with DB Students (Optimized Loop)
-            students = Student.objects.exclude(student_img='')
+            if selected_class.lower() == 'all':
+                students = Student.objects.exclude(student_img='')
+                class_msg = "All Classes"
+            else:
+                students = Student.objects.filter(clas=selected_class).exclude(student_img='')
+                class_msg = f"Class {selected_class}"
             
+            if not students.exists():
+                 return JsonResponse({'success': False, 'message': f'No students found in {class_msg}.'})
+
             for student in students:
                 try:
-                    # --- CACHE LOGIC START ---
                     known_encoding = None
 
-                    # Check if we already have this student's face math in memory
                     if student.id in student_encodings_cache:
                         known_encoding = student_encodings_cache[student.id]
                     else:
-                        # Only run this heavy code if NOT in cache
                         if not student.student_img or not os.path.exists(student.student_img.path):
                             continue
 
@@ -268,20 +272,14 @@ def scan_face_attendance(request):
                         
                         if known_encodings:
                             known_encoding = known_encodings[0]
-                            # Save to cache for next time!
                             student_encodings_cache[student.id] = known_encoding
                         else:
-                            # If profile pic has no face, mark as None to skip next time
                             student_encodings_cache[student.id] = None
                             continue
                     
-                    # If cached value is None (invalid profile pic), skip
                     if known_encoding is None:
                         continue
-                    # --- CACHE LOGIC END ---
-                    
-                    # 4. Fast Comparison (NumPy Math)
-                    # This is instant because we are comparing arrays, not processing images
+
                     matches = face_recognition.compare_faces([known_encoding], unknown_encoding, tolerance=0.5)
                     
                     if matches[0]:
@@ -291,7 +289,7 @@ def scan_face_attendance(request):
                         full_name = f"{student.first_name} {student.last_name}"
                         return JsonResponse({
                             'success': True, 
-                            'message': f'Attendance marked for {full_name}',
+                            'message': f'Attendance marked for {full_name} ({class_msg})',
                             'student_name': full_name
                         })
 
@@ -306,6 +304,7 @@ def scan_face_attendance(request):
 
     return JsonResponse({'success': False, 'message': 'Invalid request'})
 
+
 @login_required(login_url='login')
 def result(request):
     return render(request, 'result.html')
@@ -315,7 +314,6 @@ def update_result(request):
     reply = "Error Occurred"
     if request.method == "POST":   
         try:
-            # FIX: Removed the comma after name retrieval
             name_val = request.POST.get('name') 
             
             data = Result(
